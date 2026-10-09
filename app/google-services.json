@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "632986034925",
+    "project_id": "notascontactos",
+    "storage_bucket": "notascontactos.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632986034925:android:5072de501a9dc6bd5a62e4",
+        "android_client_info": {
+          "package_name": "com.brithandilan.notascontactos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnIzoEuf3iwYrrIE9DYNtSQXOZng8ETDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
