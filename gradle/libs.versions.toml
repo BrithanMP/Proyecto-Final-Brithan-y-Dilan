@@ -10,6 +10,8 @@ activityKtx = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2026.09.00"
 constraintlayout = "2.2.2"
+navigationCompose = "2.10.2"
+
 
 
 [libraries]
@@ -27,6 +29,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityKtx" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 
 [plugins]
