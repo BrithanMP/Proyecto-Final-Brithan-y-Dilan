@@ -23,6 +23,9 @@ fun LoginScreen(
 
     var correo by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
+    var errorCorreo by remember { mutableStateOf("") }
+    var errorContrasena by remember { mutableStateOf("") }
+
 
     val verdePrincipal = Color(0xFF176B61)
     val fondoTarjeta = Color(0xFFF4F7F6)
@@ -72,37 +75,82 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+
                 OutlinedTextField(
                     value = correo,
-                    onValueChange = { correo = it },
+                    onValueChange = {
+                        correo = it
+                        errorCorreo = ""
+                    },
                     label = { Text("Correo electrónico") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email
                     ),
                     singleLine = true,
+                    isError = errorCorreo.isNotEmpty(),
+                    supportingText = {
+                        if (errorCorreo.isNotEmpty()) {
+                            Text(errorCorreo)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
+
                 Spacer(modifier = Modifier.height(16.dp))
+
 
                 OutlinedTextField(
                     value = contrasena,
-                    onValueChange = { contrasena = it },
+                    onValueChange = {
+                        contrasena = it
+                        errorContrasena = ""
+                    },
                     label = { Text("Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
                     ),
                     singleLine = true,
+                    isError = errorContrasena.isNotEmpty(),
+                    supportingText = {
+                        if (errorContrasena.isNotEmpty()) {
+                            Text(errorContrasena)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
+
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
+
                     onClick = {
-                        onLoginClick(correo, contrasena)
-                    },
+                        errorCorreo = ""
+                        errorContrasena = ""
+
+                        if (correo.isBlank()) {
+                            errorCorreo = "El correo es obligatorio"
+                        } else if (
+                            !android.util.Patterns.EMAIL_ADDRESS
+                                .matcher(correo.trim()).matches()
+                        ) {
+                            errorCorreo = "Ingresa un correo válido"
+                        }
+
+                        if (contrasena.isBlank()) {
+                            errorContrasena = "La contraseña es obligatoria"
+                        }
+
+                        if (
+                            errorCorreo.isEmpty() &&
+                            errorContrasena.isEmpty()
+                        ) {
+                            onLoginClick(correo.trim(), contrasena)
+                        }
+                    }
+                    ,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = verdePrincipal
