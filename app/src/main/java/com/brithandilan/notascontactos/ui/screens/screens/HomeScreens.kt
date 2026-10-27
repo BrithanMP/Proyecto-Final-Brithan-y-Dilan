@@ -1,6 +1,7 @@
 
 package com.brithandilan.notascontactos.ui.screens
 
+import androidx.compose.material3.Button
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,12 +41,27 @@ private data class NotaMuestra(
 )
 
 @Composable
+
 fun HomeScreen(
-    onLogoutClick: () -> Unit
-) {
+    onLogoutClick: () -> Unit,
+    onNewNoteClick: () -> Unit
+)
+ {
     var busqueda by remember { mutableStateOf("") }
 
-    val notas = listOf(
+     Spacer(modifier = Modifier.height(16.dp))
+
+     Button(
+         onClick = onNewNoteClick,
+         modifier = Modifier.fillMaxWidth()
+     ) {
+         Text("Nueva nota")
+     }
+
+     Spacer(modifier = Modifier.height(24.dp))
+
+
+     val notas = listOf(
         NotaMuestra(
             titulo = "Ideas para el proyecto",
             contenido = "Organizar las tareas pendientes y definir las próximas prioridades."
@@ -59,6 +75,7 @@ fun HomeScreen(
             contenido = "Anotar las cosas importantes para no olvidarlas."
         )
     )
+
 
     val notasFiltradas = notas.filter {
         it.titulo.contains(busqueda, ignoreCase = true) ||

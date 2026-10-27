@@ -9,7 +9,7 @@ import com.brithandilan.notascontactos.ui.screens.LoginScreen
 import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
-
+import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 
 @Composable
 fun AppNavigation() {
@@ -84,7 +84,11 @@ fun AppNavigation() {
 
 
 
+
         composable("home") {
+
+
+
             HomeScreen(
                 onLogoutClick = {
                     authViewModel.cerrarSesion()
@@ -95,9 +99,29 @@ fun AppNavigation() {
                         }
                         launchSingleTop = true
                     }
+                },
+                onNewNoteClick = {
+                    navController.navigate("newNote")
+                }
+
+
+            )
+        }
+
+        composable("newNote") {
+            NewNoteScreen(
+                onSaveClick = { _, _ ->
+                    // Guardado real pendiente para el periodo 6.
+                    navController.popBackStack()
+                },
+                onCancelClick = {
+                    navController.popBackStack()
                 }
             )
         }
 
+
     }
+
 }
+
