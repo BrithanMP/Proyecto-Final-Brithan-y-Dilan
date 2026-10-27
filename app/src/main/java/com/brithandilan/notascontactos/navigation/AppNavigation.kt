@@ -83,14 +83,21 @@ fun AppNavigation() {
 
 
 
+
         composable("home") {
             HomeScreen(
                 onLogoutClick = {
+                    authViewModel.cerrarSesion()
+
                     navController.navigate("login") {
-                        popUpTo("home") { inclusive = true }
+                        popUpTo("home") {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
                 }
             )
         }
+
     }
 }

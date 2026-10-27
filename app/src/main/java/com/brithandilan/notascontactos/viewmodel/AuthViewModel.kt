@@ -76,4 +76,11 @@ class AuthViewModel : ViewModel() {
     fun limpiarError() {
         mensajeError = null
     }
+
+    fun cerrarSesion() {
+        repository.cerrarSesion()
+        mensajeError = null
+        cargando = false
+    }
+
 }

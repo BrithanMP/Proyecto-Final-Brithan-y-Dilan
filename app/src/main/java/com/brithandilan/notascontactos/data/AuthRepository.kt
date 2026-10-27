@@ -54,4 +54,9 @@ class AuthRepository {
             }
         }
     }
+
+    fun cerrarSesion() {
+        auth.signOut()
+    }
+
 }
