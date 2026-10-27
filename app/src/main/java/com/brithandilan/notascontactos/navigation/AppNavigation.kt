@@ -25,9 +25,13 @@ fun AppNavigation() {
                         popUpTo("login") { inclusive = true }
                     }
                 },
+
                 onRegisterClick = {
-                    navController.navigate("register")
+                    navController.navigate("register") {
+                        launchSingleTop = true
+                    }
                 }
+
             )
         }
 
