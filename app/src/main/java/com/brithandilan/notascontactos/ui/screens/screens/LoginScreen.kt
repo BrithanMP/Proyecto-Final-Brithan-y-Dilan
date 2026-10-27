@@ -15,11 +15,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
+
 @Composable
 fun LoginScreen(
     onLoginClick: (String, String) -> Unit,
-    onRegisterClick: () -> Unit
-) {
+    onRegisterClick: () -> Unit,
+    mensajeError: String? = null,
+    cargando: Boolean = false
+)
+ {
 
     var correo by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
@@ -155,7 +159,9 @@ fun LoginScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = verdePrincipal
                     )
-                ) {
+                )
+
+                {
                     Text("Iniciar sesión")
                 }
 
@@ -170,6 +176,22 @@ fun LoginScreen(
                         color = verdePrincipal
                     )
                 }
+
+                if (mensajeError != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = mensajeError,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                if (cargando) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    CircularProgressIndicator()
+                }
+
             }
         }
     }

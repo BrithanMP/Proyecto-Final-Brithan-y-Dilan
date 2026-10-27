@@ -7,11 +7,16 @@ import androidx.navigation.compose.rememberNavController
 import com.brithandilan.notascontactos.ui.screens.HomeScreen
 import com.brithandilan.notascontactos.ui.screens.LoginScreen
 import com.brithandilan.notascontactos.ui.screens.RegisterScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.brithandilan.notascontactos.viewmodel.AuthViewModel
+
 
 @Composable
 fun AppNavigation() {
 
     val navController = rememberNavController()
+    val authViewModel: AuthViewModel = viewModel()
+
 
     NavHost(
         navController = navController,
@@ -20,9 +25,19 @@ fun AppNavigation() {
 
         composable("login") {
             LoginScreen(
-                onLoginClick = { _, _ ->
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
+                mensajeError = authViewModel.mensajeError,
+                cargando = authViewModel.cargando,
+                onLoginClick = { correo, contrasena ->
+
+                    authViewModel.iniciarSesion(
+                        correo,
+                        contrasena
+                    ) {
+                        navController.navigate("home") {
+                            popUpTo("login") {
+                                inclusive = true
+                            }
+                        }
                     }
                 },
 
@@ -37,16 +52,29 @@ fun AppNavigation() {
 
         composable("register") {
             RegisterScreen(
-                onRegisterClick = { _, _, _ ->
-                    navController.navigate("login") {
-                        popUpTo("login") { inclusive = false }
+                mensajeError = authViewModel.mensajeError,
+                cargando = authViewModel.cargando,
+                onRegisterClick = { _, correo, contrasena ->
+
+                    authViewModel.registrarUsuario(
+                        correo,
+                        contrasena
+                    ) {
+                        navController.navigate("home") {
+                            popUpTo("login") {
+                                inclusive = true
+                            }
+                        }
                     }
                 },
+
                 onBackToLoginClick = {
                     navController.popBackStack()
                 }
             )
         }
+
+
 
         composable("home") {
             HomeScreen(

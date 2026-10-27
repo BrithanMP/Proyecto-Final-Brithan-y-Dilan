@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.gms.google-services") version "4.5.0" apply false
+    id("com.google.gms.google-services") version "4.5.0"
 
 }
 
@@ -56,5 +56,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.navigation.compose)
+    implementation("com.google.firebase:firebase-auth")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+
+
 
 }
