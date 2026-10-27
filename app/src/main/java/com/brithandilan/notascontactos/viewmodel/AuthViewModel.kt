@@ -10,6 +10,10 @@ import com.brithandilan.notascontactos.data.AuthRepository
 class AuthViewModel : ViewModel() {
 
     private val repository = AuthRepository()
+    fun haySesionActiva(): Boolean {
+        return repository.haySesionActiva()
+    }
+
 
     var cargando by mutableStateOf(false)
         private set

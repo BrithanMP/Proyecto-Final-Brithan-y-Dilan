@@ -6,6 +6,10 @@ import com.google.firebase.auth.FirebaseAuth
 class AuthRepository {
 
     private val auth = FirebaseAuth.getInstance()
+    fun haySesionActiva(): Boolean {
+        return auth.currentUser != null
+    }
+
 
     fun registrarUsuario(
         correo: String,

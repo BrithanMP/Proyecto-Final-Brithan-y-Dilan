@@ -16,11 +16,18 @@ fun AppNavigation() {
 
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
+    val startDestination = if (authViewModel.haySesionActiva()) {
+        "home"
+    } else {
+        "login"
+    }
+
+
 
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = startDestination
     ) {
 
         composable("login") {
