@@ -160,3 +160,6 @@ class NoteRepository {
             }
     }
 }
+
+// Nota, el periodo 8 en su segunda actividad se tenia que hacer
+// corrección de errores pero Dilan y yo las hemos hecho conforme avanzamos.
