@@ -16,6 +16,7 @@ import com.brithandilan.notascontactos.ui.screens.LoginScreen
 import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 import com.brithandilan.notascontactos.ui.screens.NoteDetailScreen
+import com.brithandilan.notascontactos.ui.screens.ContactsScreen
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.viewmodel.NoteViewModel
 
@@ -134,6 +135,12 @@ fun AppNavigation() {
                     navController.navigate("noteDetail")
                 },
 
+                onContactsClick = {
+                    navController.navigate("contacts") {
+                        launchSingleTop = true
+                    }
+                },
+
                 notas = noteViewModel.notas
             )
         }
@@ -204,6 +211,18 @@ fun AppNavigation() {
                     mensajeError = noteViewModel.mensajeError
                 )
             }
+        }
+
+        composable("contacts") {
+
+            ContactsScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+                onNewContactClick = {
+                }
+            )
         }
     }
 }
