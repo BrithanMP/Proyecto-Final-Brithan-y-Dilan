@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services") version "4.5.0"
 
+
 }
 
 android {
@@ -39,6 +40,8 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.firebase:firebase-firestore")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)

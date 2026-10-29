@@ -25,11 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+
 @Composable
 fun NewNoteScreen(
     onSaveClick: (String, String) -> Unit,
-    onCancelClick: () -> Unit
-) {
+    onCancelClick: () -> Unit,
+    mensajeError: String? = null,
+    cargando: Boolean = false
+)
+ {
     var titulo by remember { mutableStateOf("") }
     var contenido by remember { mutableStateOf("") }
 
@@ -79,14 +83,39 @@ fun NewNoteScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+
         Button(
             onClick = {
                 onSaveClick(titulo, contenido)
             },
+            enabled = !cargando &&
+                    titulo.isNotBlank() &&
+                    contenido.isNotBlank(),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Guardar nota")
+            Text(
+                if (cargando) "Guardando..."
+                else "Guardar nota"
+            )
         }
+
+        if (mensajeError != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = mensajeError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        TextButton(
+            onClick = onCancelClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cancelar")
+        }
+
 
         TextButton(
             onClick = onCancelClick,

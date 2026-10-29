@@ -10,10 +10,14 @@ import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
+import com.brithandilan.notascontactos.viewmodel.NoteViewModel
+
 
 @Composable
 fun AppNavigation() {
 
+
+    val noteViewModel: NoteViewModel = viewModel()
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     val startDestination = if (authViewModel.haySesionActiva()) {
@@ -57,27 +61,28 @@ fun AppNavigation() {
             )
         }
 
-        composable("register") {
-            RegisterScreen(
-                mensajeError = authViewModel.mensajeError,
-                cargando = authViewModel.cargando,
-                onRegisterClick = { _, correo, contrasena ->
 
-                    authViewModel.registrarUsuario(
-                        correo,
-                        contrasena
-                    ) {
-                        navController.navigate("home") {
-                            popUpTo("login") {
-                                inclusive = true
-                            }
+        composable("newNote") {
+
+            NewNoteScreen(
+                onSaveClick = { titulo, contenido ->
+
+                    noteViewModel.guardarNota(
+                        titulo = titulo,
+                        contenido = contenido,
+                        onSuccess = {
+                            navController.popBackStack()
                         }
-                    }
+                    )
                 },
 
-                onBackToLoginClick = {
+                onCancelClick = {
+                    noteViewModel.limpiarError()
                     navController.popBackStack()
-                }
+                },
+
+                mensajeError = noteViewModel.mensajeError,
+                cargando = noteViewModel.cargando
             )
         }
 
