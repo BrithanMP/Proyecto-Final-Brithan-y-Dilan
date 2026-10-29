@@ -221,6 +221,10 @@ fun AppNavigation() {
 
         composable("contacts") {
 
+            LaunchedEffect(Unit) {
+                contactViewModel.cargarContactos()
+            }
+
             ContactsScreen(
                 onBackClick = {
                     navController.popBackStack()
@@ -229,7 +233,11 @@ fun AppNavigation() {
                 onNewContactClick = {
                     contactViewModel.limpiarError()
                     navController.navigate("newContact")
-                }
+                },
+
+                contactos = contactViewModel.contactos,
+                cargando = contactViewModel.cargando,
+                mensajeError = contactViewModel.mensajeError
             )
         }
 

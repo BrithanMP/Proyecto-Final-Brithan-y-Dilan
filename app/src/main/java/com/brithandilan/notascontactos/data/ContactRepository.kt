@@ -65,4 +65,34 @@ class ContactRepository {
                 )
             }
     }
+
+    fun obtenerContactos(
+        onResult: (List<Contact>, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(emptyList(), "Usuario no autenticado")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("contacts")
+            .get()
+            .addOnSuccessListener { documentos ->
+
+                val contactos = documentos.mapNotNull { documento ->
+                    documento.toObject(Contact::class.java)
+                }.sortedBy { it.nombre.lowercase() }
+
+                onResult(contactos, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    emptyList(),
+                    error.message ?: "Error al obtener los contactos"
+                )
+            }
+    }
 }

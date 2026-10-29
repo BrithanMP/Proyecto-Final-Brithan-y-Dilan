@@ -5,10 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.brithandilan.notascontactos.data.ContactRepository
+import com.brithandilan.notascontactos.model.Contact
 
 class ContactViewModel : ViewModel() {
 
     private val repository = ContactRepository()
+
+    var contactos by mutableStateOf<List<Contact>>(emptyList())
+        private set
 
     var cargando by mutableStateOf(false)
         private set
@@ -45,6 +49,22 @@ class ContactViewModel : ViewModel() {
                 onSuccess()
             } else {
                 mensajeError = error ?: "No se pudo guardar el contacto"
+            }
+        }
+    }
+
+    fun cargarContactos() {
+        cargando = true
+        mensajeError = null
+
+        repository.obtenerContactos { listaContactos, error ->
+
+            cargando = false
+
+            if (error == null) {
+                contactos = listaContactos
+            } else {
+                mensajeError = error
             }
         }
     }
