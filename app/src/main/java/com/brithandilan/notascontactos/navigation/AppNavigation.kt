@@ -1,22 +1,25 @@
 package com.brithandilan.notascontactos.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.brithandilan.notascontactos.model.Note
+import com.brithandilan.notascontactos.ui.screens.ContactsScreen
 import com.brithandilan.notascontactos.ui.screens.HomeScreen
 import com.brithandilan.notascontactos.ui.screens.LoginScreen
-import com.brithandilan.notascontactos.ui.screens.RegisterScreen
+import com.brithandilan.notascontactos.ui.screens.NewContactScreen
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 import com.brithandilan.notascontactos.ui.screens.NoteDetailScreen
-import com.brithandilan.notascontactos.ui.screens.ContactsScreen
+import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.viewmodel.NoteViewModel
 
@@ -221,6 +224,26 @@ fun AppNavigation() {
                 },
 
                 onNewContactClick = {
+                    navController.navigate("newContact")
+                }
+            )
+        }
+
+        composable("newContact") {
+
+            val context = LocalContext.current
+
+            NewContactScreen(
+                onSaveClick = { _, _, _ ->
+                    Toast.makeText(
+                        context,
+                        "El guardado estará disponible en el periodo 10",
+                        Toast.LENGTH_LONG
+                    ).show()
+                },
+
+                onCancelClick = {
+                    navController.popBackStack()
                 }
             )
         }
