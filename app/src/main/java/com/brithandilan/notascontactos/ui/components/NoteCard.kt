@@ -1,6 +1,8 @@
 
 package com.brithandilan.notascontactos.ui.components
 
+
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -11,13 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.brithandilan.notascontactos.model.Note
 
+
 @Composable
 fun NoteCard(
     nota: Note,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
+)
+ {
+     Card(
+         modifier = modifier
+             .fillMaxWidth()
+             .clickable { onClick() },
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant

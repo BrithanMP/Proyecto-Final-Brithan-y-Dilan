@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+
 import com.brithandilan.notascontactos.model.Note
 import com.brithandilan.notascontactos.ui.components.NoteCard
 
@@ -22,13 +23,16 @@ import com.brithandilan.notascontactos.ui.components.NoteCard
 fun HomeScreen(
     onLogoutClick: () -> Unit,
     onNewNoteClick: () -> Unit,
+    onNoteClick: (Note) -> Unit,
     notas: List<Note> = emptyList()
 ) {
-    var busqueda by remember { mutableStateOf("") }
+
+    var busqueda by remember {
+        mutableStateOf("")
+    }
 
     val verdePrincipal = Color(0xFF176B61)
 
-    // Filtrar las notas por título o contenido
     val notasFiltradas = notas.filter { nota ->
         nota.titulo.contains(
             busqueda,
@@ -45,13 +49,15 @@ fun HomeScreen(
             .padding(20.dp)
     ) {
 
-        // Encabezado de Home
+        // ENCABEZADO
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+
             Column {
+
                 Text(
                     text = "Mis notas",
                     style = MaterialTheme.typography.headlineLarge,
@@ -65,8 +71,9 @@ fun HomeScreen(
                 )
             }
 
-            // Cerrar sesión
-            IconButton(onClick = onLogoutClick) {
+            IconButton(
+                onClick = onLogoutClick
+            ) {
                 Icon(
                     imageVector = Icons.Default.Logout,
                     contentDescription = "Cerrar sesión"
@@ -74,9 +81,11 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
 
-        // Crear nueva nota
+        // BOTÓN PARA CREAR NOTAS
         Button(
             onClick = onNewNoteClick,
             modifier = Modifier.fillMaxWidth()
@@ -84,12 +93,16 @@ fun HomeScreen(
             Text("Nueva nota")
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
 
-        // Buscar notas
+        // BUSCADOR
         OutlinedTextField(
             value = busqueda,
-            onValueChange = { busqueda = it },
+            onValueChange = {
+                busqueda = it
+            },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             placeholder = {
@@ -104,7 +117,9 @@ fun HomeScreen(
             shape = RoundedCornerShape(16.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
 
         Text(
             text = "Notas recientes",
@@ -112,30 +127,41 @@ fun HomeScreen(
             fontWeight = FontWeight.SemiBold
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(
+            modifier = Modifier.height(12.dp)
+        )
 
-        // Mostrar notas obtenidas desde Firebase
+        // LISTA DE NOTAS
         if (notasFiltradas.isEmpty()) {
 
             Text(
                 text = "No se encontraron notas.",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier.padding(
+                    vertical = 16.dp
+                )
             )
 
         } else {
 
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(
+                    12.dp
+                )
             ) {
+
                 items(
                     items = notasFiltradas,
                     key = { nota -> nota.id }
                 ) { nota ->
 
-                    // Componente visual reutilizable
-                    NoteCard(nota = nota)
+                    NoteCard(
+                        nota = nota,
+                        onClick = {
+                            onNoteClick(nota)
+                        }
+                    )
                 }
             }
         }

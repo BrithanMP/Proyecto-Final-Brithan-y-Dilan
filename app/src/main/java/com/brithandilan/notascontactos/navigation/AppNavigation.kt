@@ -1,43 +1,60 @@
+
 package com.brithandilan.notascontactos.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+
+import com.brithandilan.notascontactos.model.Note
 import com.brithandilan.notascontactos.ui.screens.HomeScreen
 import com.brithandilan.notascontactos.ui.screens.LoginScreen
-import com.brithandilan.notascontactos.ui.screens.RegisterScreen
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
+import com.brithandilan.notascontactos.ui.screens.NoteDetailScreen
+import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.viewmodel.NoteViewModel
-import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun AppNavigation() {
 
-
-    val noteViewModel: NoteViewModel = viewModel()
     val navController = rememberNavController()
+
     val authViewModel: AuthViewModel = viewModel()
-    val startDestination = if (authViewModel.haySesionActiva()) {
-        "home"
-    } else {
-        "login"
+    val noteViewModel: NoteViewModel = viewModel()
+
+    // NOTA SELECCIONADA
+    var notaSeleccionada by remember {
+        mutableStateOf<Note?>(null)
     }
 
-
-
+    // PANTALLA INICIAL
+    val startDestination =
+        if (authViewModel.haySesionActiva()) {
+            "home"
+        } else {
+            "login"
+        }
 
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
 
+        // LOGIN
         composable("login") {
+
             LoginScreen(
                 mensajeError = authViewModel.mensajeError,
                 cargando = authViewModel.cargando,
+
                 onLoginClick = { correo, contrasena ->
 
                     authViewModel.iniciarSesion(
@@ -57,11 +74,35 @@ fun AppNavigation() {
                         launchSingleTop = true
                     }
                 }
-
             )
         }
 
+        // HOME
+        composable("home") {
 
+            LaunchedEffect(Unit) {
+                noteViewModel.cargarNotas()
+            }
+
+            HomeScreen(
+                onLogoutClick = {
+                    // Pendiente de conectar con AuthViewModel
+                },
+
+                onNewNoteClick = {
+                    navController.navigate("newNote")
+                },
+
+                onNoteClick = { nota ->
+                    notaSeleccionada = nota
+                    navController.navigate("noteDetail")
+                },
+
+                notas = noteViewModel.notas
+            )
+        }
+
+        // CREAR NUEVA NOTA
         composable("newNote") {
 
             NewNoteScreen(
@@ -86,46 +127,20 @@ fun AppNavigation() {
             )
         }
 
+        // DETALLE DE NOTA
+        composable("noteDetail") {
 
+            val nota = notaSeleccionada
 
+            if (nota != null) {
 
-
-
-        composable("home") {
-
-            LaunchedEffect(Unit) {
-                noteViewModel.cargarNotas()
+                NoteDetailScreen(
+                    nota = nota,
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
-
-            HomeScreen(
-                onLogoutClick = {
-                    // CONSERVA AQUÍ TU CÓDIGO ACTUAL
-                    // PARA CERRAR SESIÓN
-                },
-
-                onNewNoteClick = {
-                    navController.navigate("newNote")
-                },
-
-                notas = noteViewModel.notas
-            )
         }
-
-
-        composable("newNote") {
-            NewNoteScreen(
-                onSaveClick = { _, _ ->
-                    // Guardado real pendiente para el periodo 6.
-                    navController.popBackStack()
-                },
-                onCancelClick = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-
     }
-
 }
-
