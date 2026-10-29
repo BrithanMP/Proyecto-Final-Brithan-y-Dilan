@@ -1,4 +1,3 @@
-
 package com.brithandilan.notascontactos.navigation
 
 import androidx.compose.runtime.Composable
@@ -7,16 +6,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
 import com.brithandilan.notascontactos.model.Note
 import com.brithandilan.notascontactos.ui.screens.HomeScreen
 import com.brithandilan.notascontactos.ui.screens.LoginScreen
+import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 import com.brithandilan.notascontactos.ui.screens.NoteDetailScreen
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
@@ -30,12 +27,10 @@ fun AppNavigation() {
     val authViewModel: AuthViewModel = viewModel()
     val noteViewModel: NoteViewModel = viewModel()
 
-    // NOTA SELECCIONADA
     var notaSeleccionada by remember {
         mutableStateOf<Note?>(null)
     }
 
-    // PANTALLA INICIAL
     val startDestination =
         if (authViewModel.haySesionActiva()) {
             "home"
@@ -48,7 +43,6 @@ fun AppNavigation() {
         startDestination = startDestination
     ) {
 
-        // LOGIN
         composable("login") {
 
             LoginScreen(
@@ -65,11 +59,14 @@ fun AppNavigation() {
                             popUpTo("login") {
                                 inclusive = true
                             }
+                            launchSingleTop = true
                         }
                     }
                 },
 
                 onRegisterClick = {
+                    authViewModel.limpiarError()
+
                     navController.navigate("register") {
                         launchSingleTop = true
                     }
@@ -77,7 +74,35 @@ fun AppNavigation() {
             )
         }
 
-        // HOME
+        composable("register") {
+
+            RegisterScreen(
+                onRegisterClick = { nombre, correo, contrasena ->
+
+                    authViewModel.registrarUsuario(
+                        nombre = nombre,
+                        correo = correo,
+                        contrasena = contrasena
+                    ) {
+                        navController.navigate("home") {
+                            popUpTo("login") {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                },
+
+                onBackToLoginClick = {
+                    authViewModel.limpiarError()
+                    navController.popBackStack()
+                },
+
+                mensajeError = authViewModel.mensajeError,
+                cargando = authViewModel.cargando
+            )
+        }
+
         composable("home") {
 
             LaunchedEffect(Unit) {
@@ -86,14 +111,25 @@ fun AppNavigation() {
 
             HomeScreen(
                 onLogoutClick = {
-                    // Pendiente de conectar con AuthViewModel
+                    authViewModel.cerrarSesion()
+                    noteViewModel.limpiarError()
+                    notaSeleccionada = null
+
+                    navController.navigate("login") {
+                        popUpTo("home") {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 },
 
                 onNewNoteClick = {
+                    noteViewModel.limpiarError()
                     navController.navigate("newNote")
                 },
 
                 onNoteClick = { nota ->
+                    noteViewModel.limpiarError()
                     notaSeleccionada = nota
                     navController.navigate("noteDetail")
                 },
@@ -102,7 +138,6 @@ fun AppNavigation() {
             )
         }
 
-        // CREAR NUEVA NOTA
         composable("newNote") {
 
             NewNoteScreen(
@@ -127,7 +162,6 @@ fun AppNavigation() {
             )
         }
 
-        // DETALLE DE NOTA
         composable("noteDetail") {
 
             val nota = notaSeleccionada
@@ -136,9 +170,38 @@ fun AppNavigation() {
 
                 NoteDetailScreen(
                     nota = nota,
+
                     onBackClick = {
+                        noteViewModel.limpiarError()
                         navController.popBackStack()
-                    }
+                    },
+
+                    onEditClick = { titulo, contenido ->
+
+                        noteViewModel.editarNota(
+                            idNota = nota.id,
+                            titulo = titulo,
+                            contenido = contenido,
+                            onSuccess = {
+                                notaSeleccionada = null
+                                navController.popBackStack()
+                            }
+                        )
+                    },
+
+                    onDeleteClick = {
+
+                        noteViewModel.eliminarNota(
+                            idNota = nota.id,
+                            onSuccess = {
+                                notaSeleccionada = null
+                                navController.popBackStack()
+                            }
+                        )
+                    },
+
+                    cargando = noteViewModel.cargando,
+                    mensajeError = noteViewModel.mensajeError
                 )
             }
         }

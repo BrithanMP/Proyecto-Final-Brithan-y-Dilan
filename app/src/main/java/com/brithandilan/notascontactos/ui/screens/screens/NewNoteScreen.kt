@@ -115,13 +115,5 @@ fun NewNoteScreen(
         ) {
             Text("Cancelar")
         }
-
-
-        TextButton(
-            onClick = onCancelClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Cancelar")
-        }
     }
 }

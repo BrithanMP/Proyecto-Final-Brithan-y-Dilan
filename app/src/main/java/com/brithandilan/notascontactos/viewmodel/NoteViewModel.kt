@@ -8,11 +8,9 @@ import androidx.lifecycle.ViewModel
 import com.brithandilan.notascontactos.data.NoteRepository
 import com.brithandilan.notascontactos.model.Note
 
-
 class NoteViewModel : ViewModel() {
 
     private val repository = NoteRepository()
-
 
     var notas by mutableStateOf<List<Note>>(emptyList())
         private set
@@ -54,14 +52,12 @@ class NoteViewModel : ViewModel() {
         }
     }
 
-    fun limpiarError() {
-        mensajeError = null
-    }
     fun cargarNotas() {
         cargando = true
         mensajeError = null
 
         repository.obtenerNotas { listaNotas, error ->
+
             cargando = false
 
             if (error == null) {
@@ -72,5 +68,87 @@ class NoteViewModel : ViewModel() {
         }
     }
 
+    fun editarNota(
+        idNota: String,
+        titulo: String,
+        contenido: String,
+        onSuccess: () -> Unit
+    ) {
+        if (cargando) return
 
+        if (idNota.isBlank()) {
+            mensajeError = "Nota no válida"
+            return
+        }
+
+        if (titulo.isBlank() || contenido.isBlank()) {
+            mensajeError = "Completa todos los campos"
+            return
+        }
+
+        mensajeError = null
+        cargando = true
+
+        repository.editarNota(
+            idNota = idNota,
+            titulo = titulo,
+            contenido = contenido
+        ) { exito, error ->
+
+            cargando = false
+
+            if (exito) {
+                notas = notas.map { nota ->
+                    if (nota.id == idNota) {
+                        nota.copy(
+                            titulo = titulo.trim(),
+                            contenido = contenido.trim()
+                        )
+                    } else {
+                        nota
+                    }
+                }
+
+                mensajeError = null
+                onSuccess()
+            } else {
+                mensajeError = error ?: "No se pudo editar la nota"
+            }
+        }
+    }
+
+    fun eliminarNota(
+        idNota: String,
+        onSuccess: () -> Unit
+    ) {
+        if (cargando) return
+
+        if (idNota.isBlank()) {
+            mensajeError = "Nota no válida"
+            return
+        }
+
+        mensajeError = null
+        cargando = true
+
+        repository.eliminarNota(idNota) { exito, error ->
+
+            cargando = false
+
+            if (exito) {
+                notas = notas.filterNot { nota ->
+                    nota.id == idNota
+                }
+
+                mensajeError = null
+                onSuccess()
+            } else {
+                mensajeError = error ?: "No se pudo eliminar la nota"
+            }
+        }
+    }
+
+    fun limpiarError() {
+        mensajeError = null
+    }
 }

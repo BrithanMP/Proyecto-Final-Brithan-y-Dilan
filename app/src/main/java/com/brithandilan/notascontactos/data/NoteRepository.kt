@@ -1,4 +1,3 @@
-
 package com.brithandilan.notascontactos.data
 
 import com.brithandilan.notascontactos.model.Note
@@ -9,6 +8,7 @@ class NoteRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+
 
     fun guardarNota(
         titulo: String,
@@ -45,9 +45,13 @@ class NoteRepository {
                 onResult(true, null)
             }
             .addOnFailureListener { error ->
-                onResult(false, error.message ?: "Error al guardar la nota")
+                onResult(
+                    false,
+                    error.message ?: "Error al guardar la nota"
+                )
             }
     }
+
 
     fun obtenerNotas(
         onResult: (List<Note>, String?) -> Unit
@@ -79,4 +83,80 @@ class NoteRepository {
             }
     }
 
+
+    fun editarNota(
+        idNota: String,
+        titulo: String,
+        contenido: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(false, "Usuario no autenticado")
+            return
+        }
+
+        if (idNota.isBlank()) {
+            onResult(false, "Nota no válida")
+            return
+        }
+
+        if (titulo.isBlank() || contenido.isBlank()) {
+            onResult(false, "Completa todos los campos")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("notes")
+            .document(idNota)
+            .update(
+                mapOf(
+                    "titulo" to titulo.trim(),
+                    "contenido" to contenido.trim()
+                )
+            )
+            .addOnSuccessListener {
+                onResult(true, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    false,
+                    error.message ?: "Error al editar la nota"
+                )
+            }
+    }
+
+    fun eliminarNota(
+        idNota: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(false, "Usuario no autenticado")
+            return
+        }
+
+        if (idNota.isBlank()) {
+            onResult(false, "Nota no válida")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("notes")
+            .document(idNota)
+            .delete()
+            .addOnSuccessListener {
+                onResult(true, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    false,
+                    error.message ?: "Error al eliminar la nota"
+                )
+            }
+    }
 }

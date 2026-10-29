@@ -14,6 +14,7 @@ class AuthRepository {
     fun registrarUsuario(
         correo: String,
         contrasena: String,
+        nombre: String = "",
         onResult: (Boolean, String?) -> Unit
     ) {
         auth.createUserWithEmailAndPassword(
@@ -22,7 +23,17 @@ class AuthRepository {
         ).addOnCompleteListener { task ->
 
             if (task.isSuccessful) {
-                onResult(true, null)
+                val user = auth.currentUser
+                if (nombre.isNotBlank() && user != null) {
+                    val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                        .setDisplayName(nombre)
+                        .build()
+                    user.updateProfile(profileUpdates).addOnCompleteListener {
+                        onResult(true, null)
+                    }
+                } else {
+                    onResult(true, null)
+                }
             } else {
                 onResult(
                     false,

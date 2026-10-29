@@ -22,6 +22,7 @@ class AuthViewModel : ViewModel() {
         private set
 
     fun registrarUsuario(
+        nombre: String,
         correo: String,
         contrasena: String,
         onSuccess: () -> Unit
@@ -33,7 +34,8 @@ class AuthViewModel : ViewModel() {
 
         repository.registrarUsuario(
             correo,
-            contrasena
+            contrasena,
+            nombre
         ) { exitoso, error ->
 
             cargando = false
