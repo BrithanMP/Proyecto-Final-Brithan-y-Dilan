@@ -21,6 +21,7 @@ import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 import com.brithandilan.notascontactos.ui.screens.NoteDetailScreen
 import com.brithandilan.notascontactos.ui.screens.RegisterScreen
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
+import com.brithandilan.notascontactos.viewmodel.ContactViewModel
 import com.brithandilan.notascontactos.viewmodel.NoteViewModel
 
 @Composable
@@ -30,6 +31,7 @@ fun AppNavigation() {
 
     val authViewModel: AuthViewModel = viewModel()
     val noteViewModel: NoteViewModel = viewModel()
+    val contactViewModel: ContactViewModel = viewModel()
 
     var notaSeleccionada by remember {
         mutableStateOf<Note?>(null)
@@ -117,6 +119,7 @@ fun AppNavigation() {
                 onLogoutClick = {
                     authViewModel.cerrarSesion()
                     noteViewModel.limpiarError()
+                    contactViewModel.limpiarError()
                     notaSeleccionada = null
 
                     navController.navigate("login") {
@@ -224,6 +227,7 @@ fun AppNavigation() {
                 },
 
                 onNewContactClick = {
+                    contactViewModel.limpiarError()
                     navController.navigate("newContact")
                 }
             )
@@ -233,16 +237,31 @@ fun AppNavigation() {
 
             val context = LocalContext.current
 
-            NewContactScreen(
-                onSaveClick = { _, _, _ ->
+            LaunchedEffect(contactViewModel.mensajeError) {
+                contactViewModel.mensajeError?.let { mensaje ->
                     Toast.makeText(
                         context,
-                        "El guardado estará disponible en el periodo 10",
+                        mensaje,
                         Toast.LENGTH_LONG
                     ).show()
+                }
+            }
+
+            NewContactScreen(
+                onSaveClick = { nombre, telefono, correo ->
+
+                    contactViewModel.guardarContacto(
+                        nombre = nombre,
+                        telefono = telefono,
+                        correo = correo,
+                        onSuccess = {
+                            navController.popBackStack()
+                        }
+                    )
                 },
 
                 onCancelClick = {
+                    contactViewModel.limpiarError()
                     navController.popBackStack()
                 }
             )
