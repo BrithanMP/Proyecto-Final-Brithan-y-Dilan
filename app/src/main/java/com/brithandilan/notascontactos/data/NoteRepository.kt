@@ -48,4 +48,35 @@ class NoteRepository {
                 onResult(false, error.message ?: "Error al guardar la nota")
             }
     }
+
+    fun obtenerNotas(
+        onResult: (List<Note>, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(emptyList(), "Usuario no autenticado")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("notes")
+            .get()
+            .addOnSuccessListener { documentos ->
+
+                val notas = documentos.mapNotNull { documento ->
+                    documento.toObject(Note::class.java)
+                }.sortedByDescending { it.fechaCreacion }
+
+                onResult(notas, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    emptyList(),
+                    error.message ?: "Error al obtener las notas"
+                )
+            }
+    }
+
 }

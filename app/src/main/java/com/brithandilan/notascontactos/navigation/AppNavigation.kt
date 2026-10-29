@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.brithandilan.notascontactos.viewmodel.AuthViewModel
 import com.brithandilan.notascontactos.ui.screens.NewNoteScreen
 import com.brithandilan.notascontactos.viewmodel.NoteViewModel
-
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun AppNavigation() {
@@ -90,28 +90,27 @@ fun AppNavigation() {
 
 
 
+
         composable("home") {
 
-
+            LaunchedEffect(Unit) {
+                noteViewModel.cargarNotas()
+            }
 
             HomeScreen(
                 onLogoutClick = {
-                    authViewModel.cerrarSesion()
-
-                    navController.navigate("login") {
-                        popUpTo("home") {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
+                    // CONSERVA AQUÍ TU CÓDIGO ACTUAL
+                    // PARA CERRAR SESIÓN
                 },
+
                 onNewNoteClick = {
                     navController.navigate("newNote")
-                }
+                },
 
-
+                notas = noteViewModel.notas
             )
         }
+
 
         composable("newNote") {
             NewNoteScreen(

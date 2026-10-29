@@ -1,15 +1,7 @@
 
 package com.brithandilan.notascontactos.ui.screens
 
-import androidx.compose.material3.Button
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,72 +9,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.brithandilan.notascontactos.model.Note
 
-private data class NotaMuestra(
-    val titulo: String,
-    val contenido: String
-)
 
 @Composable
-
 fun HomeScreen(
     onLogoutClick: () -> Unit,
-    onNewNoteClick: () -> Unit
-)
- {
+    onNewNoteClick: () -> Unit,
+    notas: List<Note> = emptyList()
+) {
     var busqueda by remember { mutableStateOf("") }
 
-     Spacer(modifier = Modifier.height(16.dp))
-
-     Button(
-         onClick = onNewNoteClick,
-         modifier = Modifier.fillMaxWidth()
-     ) {
-         Text("Nueva nota")
-     }
-
-     Spacer(modifier = Modifier.height(24.dp))
-
-
-     val notas = listOf(
-        NotaMuestra(
-            titulo = "Ideas para el proyecto",
-            contenido = "Organizar las tareas pendientes y definir las próximas prioridades."
-        ),
-        NotaMuestra(
-            titulo = "Lista de pendientes",
-            contenido = "Revisar las actividades de la semana y preparar los próximos objetivos."
-        ),
-        NotaMuestra(
-            titulo = "Recordatorios",
-            contenido = "Anotar las cosas importantes para no olvidarlas."
-        )
-    )
-
+    val verdePrincipal = Color(0xFF176B61)
 
     val notasFiltradas = notas.filter {
         it.titulo.contains(busqueda, ignoreCase = true) ||
                 it.contenido.contains(busqueda, ignoreCase = true)
     }
-
-    val verdePrincipal = Color(0xFF176B61)
 
     Column(
         modifier = Modifier
@@ -114,6 +64,15 @@ fun HomeScreen(
                     contentDescription = "Cerrar sesión"
                 )
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onNewNoteClick,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Nueva nota")
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -167,7 +126,8 @@ fun HomeScreen(
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement =
+                                Arrangement.spacedBy(12.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.NoteAlt,
@@ -178,7 +138,8 @@ fun HomeScreen(
                             Column {
                                 Text(
                                     text = nota.titulo,
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style =
+                                        MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
 
@@ -188,7 +149,8 @@ fun HomeScreen(
 
                                 Text(
                                     text = nota.contenido,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style =
+                                        MaterialTheme.typography.bodyMedium
                                 )
                             }
                         }
@@ -198,4 +160,3 @@ fun HomeScreen(
         }
     }
 }
-

@@ -6,10 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.brithandilan.notascontactos.data.NoteRepository
+import com.brithandilan.notascontactos.model.Note
+
 
 class NoteViewModel : ViewModel() {
 
     private val repository = NoteRepository()
+
+
+    var notas by mutableStateOf<List<Note>>(emptyList())
+        private set
 
     var cargando by mutableStateOf(false)
         private set
@@ -51,4 +57,20 @@ class NoteViewModel : ViewModel() {
     fun limpiarError() {
         mensajeError = null
     }
+    fun cargarNotas() {
+        cargando = true
+        mensajeError = null
+
+        repository.obtenerNotas { listaNotas, error ->
+            cargando = false
+
+            if (error == null) {
+                notas = listaNotas
+            } else {
+                mensajeError = error
+            }
+        }
+    }
+
+
 }
