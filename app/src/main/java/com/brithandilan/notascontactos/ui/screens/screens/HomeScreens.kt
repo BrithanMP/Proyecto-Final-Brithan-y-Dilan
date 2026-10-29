@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.brithandilan.notascontactos.model.Note
-
+import com.brithandilan.notascontactos.ui.components.NoteCard
 
 @Composable
 fun HomeScreen(
@@ -29,9 +28,15 @@ fun HomeScreen(
 
     val verdePrincipal = Color(0xFF176B61)
 
-    val notasFiltradas = notas.filter {
-        it.titulo.contains(busqueda, ignoreCase = true) ||
-                it.contenido.contains(busqueda, ignoreCase = true)
+    // Filtrar las notas por título o contenido
+    val notasFiltradas = notas.filter { nota ->
+        nota.titulo.contains(
+            busqueda,
+            ignoreCase = true
+        ) || nota.contenido.contains(
+            busqueda,
+            ignoreCase = true
+        )
     }
 
     Column(
@@ -39,6 +44,8 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
+
+        // Encabezado de Home
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -58,6 +65,7 @@ fun HomeScreen(
                 )
             }
 
+            // Cerrar sesión
             IconButton(onClick = onLogoutClick) {
                 Icon(
                     imageVector = Icons.Default.Logout,
@@ -68,6 +76,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Crear nueva nota
         Button(
             onClick = onNewNoteClick,
             modifier = Modifier.fillMaxWidth()
@@ -77,6 +86,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Buscar notas
         OutlinedTextField(
             value = busqueda,
             onValueChange = { busqueda = it },
@@ -104,57 +114,28 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Mostrar notas obtenidas desde Firebase
         if (notasFiltradas.isEmpty()) {
+
             Text(
                 text = "No se encontraron notas.",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
+
         } else {
+
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(notasFiltradas) { nota ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                                MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalArrangement =
-                                Arrangement.spacedBy(12.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.NoteAlt,
-                                contentDescription = null,
-                                tint = verdePrincipal
-                            )
+                items(
+                    items = notasFiltradas,
+                    key = { nota -> nota.id }
+                ) { nota ->
 
-                            Column {
-                                Text(
-                                    text = nota.titulo,
-                                    style =
-                                        MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.height(6.dp)
-                                )
-
-                                Text(
-                                    text = nota.contenido,
-                                    style =
-                                        MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-                    }
+                    // Componente visual reutilizable
+                    NoteCard(nota = nota)
                 }
             }
         }
