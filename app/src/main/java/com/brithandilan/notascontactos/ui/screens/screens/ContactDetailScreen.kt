@@ -271,7 +271,7 @@ fun ContactDetailScreen(
             )
 
             Text(
-                text = "Número de teléfono",
+                text = "Numero de teléfono",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
