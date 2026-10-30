@@ -1,5 +1,8 @@
 package com.brithandilan.notascontactos.ui.screens
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.util.Patterns
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -24,6 +28,7 @@ fun ContactDetailScreen(
     mensajeError: String? = null
 ) {
     val verdePrincipal = Color(0xFF176B61)
+    val context = LocalContext.current
 
     var modoEdicion by remember(contacto.id) {
         mutableStateOf(false)
@@ -46,6 +51,10 @@ fun ContactDetailScreen(
     }
 
     var errorFormulario by remember(contacto.id) {
+        mutableStateOf<String?>(null)
+    }
+
+    var errorLlamada by remember(contacto.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -273,6 +282,41 @@ fun ContactDetailScreen(
                 text = contacto.telefono,
                 style = MaterialTheme.typography.bodyLarge
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_DIAL,
+                        Uri.fromParts(
+                            "tel",
+                            contacto.telefono.trim(),
+                            null
+                        )
+                    )
+
+                    try {
+                        errorLlamada = null
+                        context.startActivity(intent)
+                    } catch (error: ActivityNotFoundException) {
+                        errorLlamada = "No hay una aplicación disponible para llamar"
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = contacto.telefono.isNotBlank() && !cargando
+            ) {
+                Text("Llamar")
+            }
+
+            if (errorLlamada != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = errorLlamada ?: "",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 20.dp)
