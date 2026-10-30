@@ -95,4 +95,94 @@ class ContactRepository {
                 )
             }
     }
+
+    fun editarContacto(
+        idContacto: String,
+        nombre: String,
+        telefono: String,
+        correo: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(false, "Usuario no autenticado")
+            return
+        }
+
+        if (idContacto.isBlank()) {
+            onResult(false, "Contacto no válido")
+            return
+        }
+
+        if (nombre.isBlank() || telefono.isBlank()) {
+            onResult(false, "Completa los campos obligatorios")
+            return
+        }
+
+        if (telefono.count { it.isDigit() } < 8) {
+            onResult(false, "Ingresa un teléfono válido")
+            return
+        }
+
+        if (correo.isNotBlank() &&
+            !Patterns.EMAIL_ADDRESS.matcher(correo.trim()).matches()
+        ) {
+            onResult(false, "Ingresa un correo válido")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("contacts")
+            .document(idContacto)
+            .update(
+                mapOf(
+                    "nombre" to nombre.trim(),
+                    "telefono" to telefono.trim(),
+                    "correo" to correo.trim()
+                )
+            )
+            .addOnSuccessListener {
+                onResult(true, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    false,
+                    error.message ?: "Error al editar el contacto"
+                )
+            }
+    }
+
+    fun eliminarContacto(
+        idContacto: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            onResult(false, "Usuario no autenticado")
+            return
+        }
+
+        if (idContacto.isBlank()) {
+            onResult(false, "Contacto no válido")
+            return
+        }
+
+        db.collection("users")
+            .document(userId)
+            .collection("contacts")
+            .document(idContacto)
+            .delete()
+            .addOnSuccessListener {
+                onResult(true, null)
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    false,
+                    error.message ?: "Error al eliminar el contacto"
+                )
+            }
+    }
 }

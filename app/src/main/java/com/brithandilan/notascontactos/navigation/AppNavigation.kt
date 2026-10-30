@@ -243,6 +243,7 @@ fun AppNavigation() {
                 },
 
                 onContactClick = { contacto ->
+                    contactViewModel.limpiarError()
                     contactoSeleccionado = contacto
                     navController.navigate("contactDetail")
                 },
@@ -297,8 +298,37 @@ fun AppNavigation() {
                     contacto = contacto,
 
                     onBackClick = {
+                        contactViewModel.limpiarError()
                         navController.popBackStack()
-                    }
+                    },
+
+                    onEditClick = { nombre, telefono, correo ->
+
+                        contactViewModel.editarContacto(
+                            idContacto = contacto.id,
+                            nombre = nombre,
+                            telefono = telefono,
+                            correo = correo,
+                            onSuccess = {
+                                contactoSeleccionado = null
+                                navController.popBackStack()
+                            }
+                        )
+                    },
+
+                    onDeleteClick = {
+
+                        contactViewModel.eliminarContacto(
+                            idContacto = contacto.id,
+                            onSuccess = {
+                                contactoSeleccionado = null
+                                navController.popBackStack()
+                            }
+                        )
+                    },
+
+                    cargando = contactViewModel.cargando,
+                    mensajeError = contactViewModel.mensajeError
                 )
             }
         }
