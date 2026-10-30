@@ -1,5 +1,6 @@
 package com.brithandilan.notascontactos.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,7 +33,10 @@ fun NewContactScreen(
             .padding(20.dp)
     ) {
         TextButton(
-            onClick = onCancelClick
+            onClick = onCancelClick,
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = verdePrincipal
+            )
         ) {
             Text("← Volver a mis contactos")
         }
@@ -72,8 +76,8 @@ fun NewContactScreen(
 
         OutlinedTextField(
             value = telefono,
-            onValueChange = {
-                telefono = it
+            onValueChange = { nuevoValor ->
+                telefono = nuevoValor.filter { it.isDigit() }
                 mensajeError = null
             },
             label = {
@@ -123,7 +127,7 @@ fun NewContactScreen(
                         mensajeError = "Completa los campos obligatorios"
                     }
 
-                    telefono.count { it.isDigit() } < 8 -> {
+                    telefono.length < 8 -> {
                         mensajeError = "Ingresa un teléfono válido"
                     }
 
@@ -155,7 +159,11 @@ fun NewContactScreen(
 
         OutlinedButton(
             onClick = onCancelClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = verdePrincipal
+            ),
+            border = BorderStroke(1.dp, verdePrincipal)
         ) {
             Text("Cancelar")
         }

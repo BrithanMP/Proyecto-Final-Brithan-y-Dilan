@@ -135,8 +135,8 @@ fun ContactDetailScreen(
 
             OutlinedTextField(
                 value = nombreEditado,
-                onValueChange = {
-                    nombreEditado = it
+                onValueChange = { nuevoValor ->
+                    telefonoEditado = nuevoValor.filter { it.isDigit() }
                     errorFormulario = null
                 },
                 label = {
