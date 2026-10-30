@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.brithandilan.notascontactos.model.Contact
+import com.brithandilan.notascontactos.ui.components.ContactCard
 
 @Composable
 fun ContactsScreen(
@@ -157,43 +158,9 @@ fun ContactsScreen(
                     key = { contacto -> contacto.id }
                 ) { contacto ->
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    ) {
-
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-
-                            Text(
-                                text = contacto.nombre,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = verdePrincipal
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = "Teléfono: ${contacto.telefono}",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                            if (contacto.correo.isNotBlank()) {
-
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                Text(
-                                    text = "Correo: ${contacto.correo}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-                    }
+                    ContactCard(
+                        contacto = contacto
+                    )
                 }
             }
         }
