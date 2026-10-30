@@ -20,6 +20,7 @@ import com.brithandilan.notascontactos.ui.components.ContactCard
 fun ContactsScreen(
     onBackClick: () -> Unit,
     onNewContactClick: () -> Unit,
+    onContactClick: (Contact) -> Unit = {},
     contactos: List<Contact> = emptyList(),
     cargando: Boolean = false,
     mensajeError: String? = null
@@ -41,7 +42,6 @@ fun ContactsScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-
         TextButton(
             onClick = onBackClick
         ) {
@@ -117,7 +117,6 @@ fun ContactsScreen(
         }
 
         if (cargando) {
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,7 +127,6 @@ fun ContactsScreen(
             }
 
         } else if (contactosFiltrados.isEmpty()) {
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -147,19 +145,20 @@ fun ContactsScreen(
             }
 
         } else {
-
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 items(
                     items = contactosFiltrados,
                     key = { contacto -> contacto.id }
                 ) { contacto ->
 
                     ContactCard(
-                        contacto = contacto
+                        contacto = contacto,
+                        onClick = {
+                            onContactClick(contacto)
+                        }
                     )
                 }
             }

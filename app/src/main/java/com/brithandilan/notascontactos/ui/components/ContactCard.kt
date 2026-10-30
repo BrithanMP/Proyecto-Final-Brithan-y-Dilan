@@ -1,6 +1,7 @@
 package com.brithandilan.notascontactos.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,12 +16,15 @@ import com.brithandilan.notascontactos.model.Contact
 
 @Composable
 fun ContactCard(
-    contacto: Contact
+    contacto: Contact,
+    onClick: () -> Unit = {}
 ) {
     val verdePrincipal = Color(0xFF176B61)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant

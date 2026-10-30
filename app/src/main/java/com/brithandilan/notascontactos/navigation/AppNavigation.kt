@@ -13,7 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.brithandilan.notascontactos.model.Note
+import com.brithandilan.notascontactos.model.Contact
 import com.brithandilan.notascontactos.ui.screens.ContactsScreen
+import com.brithandilan.notascontactos.ui.screens.ContactDetailScreen
 import com.brithandilan.notascontactos.ui.screens.HomeScreen
 import com.brithandilan.notascontactos.ui.screens.LoginScreen
 import com.brithandilan.notascontactos.ui.screens.NewContactScreen
@@ -35,6 +37,10 @@ fun AppNavigation() {
 
     var notaSeleccionada by remember {
         mutableStateOf<Note?>(null)
+    }
+
+    var contactoSeleccionado by remember {
+        mutableStateOf<Contact?>(null)
     }
 
     val startDestination =
@@ -121,6 +127,7 @@ fun AppNavigation() {
                     noteViewModel.limpiarError()
                     contactViewModel.limpiarError()
                     notaSeleccionada = null
+                    contactoSeleccionado = null
 
                     navController.navigate("login") {
                         popUpTo("home") {
@@ -235,6 +242,11 @@ fun AppNavigation() {
                     navController.navigate("newContact")
                 },
 
+                onContactClick = { contacto ->
+                    contactoSeleccionado = contacto
+                    navController.navigate("contactDetail")
+                },
+
                 contactos = contactViewModel.contactos,
                 cargando = contactViewModel.cargando,
                 mensajeError = contactViewModel.mensajeError
@@ -273,6 +285,22 @@ fun AppNavigation() {
                     navController.popBackStack()
                 }
             )
+        }
+
+        composable("contactDetail") {
+
+            val contacto = contactoSeleccionado
+
+            if (contacto != null) {
+
+                ContactDetailScreen(
+                    contacto = contacto,
+
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }
