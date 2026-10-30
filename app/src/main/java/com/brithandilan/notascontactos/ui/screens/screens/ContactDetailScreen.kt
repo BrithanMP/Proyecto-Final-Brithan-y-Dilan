@@ -54,7 +54,7 @@ fun ContactDetailScreen(
         mutableStateOf<String?>(null)
     }
 
-    var errorLlamada by remember(contacto.id) {
+    var errorComunicacion by remember(contacto.id) {
         mutableStateOf<String?>(null)
     }
 
@@ -271,7 +271,7 @@ fun ContactDetailScreen(
             )
 
             Text(
-                text = "Numero de teléfono",
+                text = "Número de teléfono",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -297,10 +297,11 @@ fun ContactDetailScreen(
                     )
 
                     try {
-                        errorLlamada = null
+                        errorComunicacion = null
                         context.startActivity(intent)
                     } catch (error: ActivityNotFoundException) {
-                        errorLlamada = "No hay una aplicación disponible para llamar"
+                        errorComunicacion =
+                            "No hay una aplicación disponible para llamar"
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -309,11 +310,38 @@ fun ContactDetailScreen(
                 Text("Llamar")
             }
 
-            if (errorLlamada != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedButton(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_SENDTO,
+                        Uri.fromParts(
+                            "smsto",
+                            contacto.telefono.trim(),
+                            null
+                        )
+                    )
+
+                    try {
+                        errorComunicacion = null
+                        context.startActivity(intent)
+                    } catch (error: ActivityNotFoundException) {
+                        errorComunicacion =
+                            "No hay una aplicación de mensajes disponible"
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = contacto.telefono.isNotBlank() && !cargando
+            ) {
+                Text("Enviar SMS")
+            }
+
+            if (errorComunicacion != null) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = errorLlamada ?: "",
+                    text = errorComunicacion ?: "",
                     color = MaterialTheme.colorScheme.error
                 )
             }
